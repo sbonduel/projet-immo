@@ -9,7 +9,7 @@ const https = require('https');
 const ROBOT_USER_ID = '6813ebb33c6ac35cbac3e718';
 puppeteer.use(StealthPlugin());
 
-function cleanDescription(rawDescription, { city, surface, rooms, bedrooms }) {
+function cleanDescription(rawDescription, { ville, surface, piece, chambre }) {
   if (!rawDescription) return '';
 
   const lines = rawDescription
@@ -24,10 +24,10 @@ function cleanDescription(rawDescription, { city, surface, rooms, bedrooms }) {
   const filteredLines = lines
     .slice(firstUsefulIndex >= 0 ? firstUsefulIndex : 2)
     .filter(line => {
-      if (line.includes(city)) return false;
+      if (line.includes(ville)) return false;
       if (surface && line.includes(`${surface} m²`)) return false;
-      if (rooms && line.includes(`${rooms} pièce`)) return false;
-      if (bedrooms && line.includes(`${bedrooms} chambre`)) return false;
+      if (piece && line.includes(`${piece} pièce`)) return false;
+      if (chambre && line.includes(`${chambre} chambre`)) return false;
       if (/^\d{1,3}(?:[.,]\d{3})* € le m²/i.test(line)) return false;
       if (/Classe énergie|GES/i.test(line)) return false;
       if (/^[A-G]\s*$/i.test(line)) return false;
@@ -54,7 +54,7 @@ function downloadImage(url, filepath) {
 }
 
 async function scrapePap() {
-  const browser = await puppeteer.launch({ headless: false, slowMo: 50 });
+  const browser = await puppeteer.launch({ chaufage: false, slowMo: 50 });
   const page = await browser.newPage();
 
   await page.setUserAgent(
@@ -98,7 +98,7 @@ async function scrapePap() {
           const priceText = getText('span.item-price');
           const price = parseInt(priceText.replace(/[^\d]/g, ''), 10) || 0;
           const description = getText('div.margin-bottom-30');
-          const city = getText('h2.margin-bottom-8');
+          const ville = getText('h2.margin-bottom-8');
 
           const infoText = Array.from(document.querySelectorAll('.item-tags li')).map(li => li.innerText.trim()).join(' | ');
           const surfaceMatch = infoText.match(/(\d+)\s?m²/);
@@ -106,10 +106,10 @@ async function scrapePap() {
           const bedroomsMatch = infoText.match(/(\d+)\s?chambre/);
 
           const surface = surfaceMatch ? parseInt(surfaceMatch[1], 10) : null;
-          const rooms = roomsMatch ? parseInt(roomsMatch[1], 10) : null;
-          const bedrooms = bedroomsMatch ? parseInt(bedroomsMatch[1], 10) : null;
+          const piece = roomsMatch ? parseInt(roomsMatch[1], 10) : null;
+          const chambre = bedroomsMatch ? parseInt(bedroomsMatch[1], 10) : null;
 
-          const floor = (() => {
+          const etage = (() => {
             const match = infoText.match(/étage\s+(\d+)/i);
             return match ? match[1] : null;
           })();
@@ -128,13 +128,13 @@ async function scrapePap() {
             title,
             price,
             description,
-            city,
+            ville,
             energyClass,
             ges,
             surface,
-            rooms,
-            bedrooms,
-            floor,
+            piece,
+            chambre,
+            etage,
             charges,
             taxeFonciere,
             imageUrls
@@ -148,7 +148,7 @@ async function scrapePap() {
         let imagePaths = [];
         for (const imgUrl of data.imageUrls.slice(0, 5)) {
           try {
-            const filename = `apt_${Date.now()}_${Math.floor(Math.random() * 10000)}.jpg`;
+            const filename = `apt_${Date.now()}_${Math.floor(Math.random() * 10000)}.jpg`;            
             const savePath = path.join(__dirname, '..', '..', 'frontend-app', 'public', 'images', filename);
             await downloadImage(imgUrl, savePath);
             imagePaths.push(`/images/${filename}`);
@@ -159,9 +159,9 @@ async function scrapePap() {
 
         let location = null;
         let addressDetails = {
-          street: '',
-          streetNumber: '',
-          city: data.city,
+          rue: '',
+          rueNombre: '',
+          ville: data.ville,
           country: 'France'
         };
 
@@ -195,25 +195,25 @@ async function scrapePap() {
         }
 
         const cleanedDescription = cleanDescription(data.description, {
-          city: data.city,
+          ville: data.ville,
           surface: data.surface,
-          rooms: data.rooms,
-          bedrooms: data.bedrooms
+          piece: data.piece,
+          chambre: data.chambre
         });
 
     const apartmentData = {
       titre: data.title,
       description: cleanedDescription,
       pays: addressDetails.country,
-      ville: addressDetails.city,
-      rue: addressDetails.street,
-      rueNombre: addressDetails.streetNumber,
+      ville: addressDetails.ville,
+      rue: addressDetails.rue,
+      rueNombre: addressDetails.rueNombre,
       postalCode: '', // facultatif, pas toujours fourni par le site
       price: data.price,
       surface: data.surface,
-      piece: data.rooms,
-      chambre: data.bedrooms,
-      etage: data.floor,
+      piece: data.piece,
+      chambre: data.chambre,
+      etage: data.etage,
       charges: data.charges,
       taxeFonciere: data.taxeFonciere,
       energyClass: data.energyClass,

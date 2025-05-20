@@ -11,10 +11,10 @@ const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const apartmentRoutes = require('./routes/apartmentRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes');
-const contactRoutes = require('./routes/contactRoutes'); // ✅ nouvelle route
+const contactRoutes = require('./routes/contactRoutes');
 
-const scrapeSeloger = require('./utils/selogerScraper');
-const scrapeLeboncoin = require('./utils/leboncoinScraper');
+//const scrapeSeloger = require('./utils/selogerScraper');
+//const scrapeLeboncoin = require('./utils/leboncoinScraper');
 const scrapePAP = require('./utils/papScraper');
 
 require('./config/passport');
@@ -55,7 +55,7 @@ app.use('/images', express.static(path.join(__dirname, '../frontend-app/public/i
 app.use('/api/auth', authRoutes);
 app.use('/api/apartments', apartmentRoutes);
 app.use('/api/favorites', favoriteRoutes);
-app.use('/api/contact', contactRoutes); // ✅ ajout de la route contact
+app.use('/api/contact', contactRoutes); 
 
 // Connexion à MongoDB
 async function startServer() {
@@ -70,7 +70,7 @@ async function startServer() {
     // Lancer un seul scraper si souhaité
     // await scrapeSeloger();
     // await scrapeLeboncoin();
-    //await scrapePAP();
+    await scrapePAP();
 
     app.listen(process.env.PORT || 5000, () =>
       console.log('🚀 Server running on port', process.env.PORT || 5000)

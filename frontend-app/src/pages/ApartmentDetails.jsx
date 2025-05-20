@@ -192,7 +192,7 @@ export default function ApartmentDetails() {
         )}
 
 
-      {infoLine('📍', 'Adresse', `${apt.streetNumber ?? ''} ${apt.street}, ${apt.city}, ${apt.country}`)}
+      {infoLine('📍', 'Adresse', `${apt.rueNombre ?? ''} ${apt.rue}, ${apt.ville}, ${apt.pays}`)}
       {infoLine('💰', 'Prix', apt.price?.toLocaleString() + ' €')}
       {infoLine('📐', 'Surface', apt.surface ? `${apt.surface} m²` : null)}
       {infoLine('🛏️', 'Pièces', apt.rooms)}

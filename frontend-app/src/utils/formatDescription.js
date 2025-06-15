@@ -54,7 +54,7 @@ const formatDescription = raw => {
     desc = desc.replace(/(une|deux|trois|quatre)?\s?(chambre|salle de bains|pièce de vie|wc|entrée|cuisine)[^,.]*[,.]/gi, match => `• ${match.trim()}\n`);
   
     // Nettoyage final
-    desc = desc.replace(/\n{3,}/g, '\n\n'); // Trop de sauts de ligne
+    desc = desc.replace(/\n{3,}/g, '\n\n'); 
     desc = desc.trim();
   
     return desc;

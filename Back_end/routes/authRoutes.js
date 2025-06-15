@@ -57,13 +57,21 @@ router.get('/logout', (req, res) => {
 });
 
 // SESSION CHECK
-router.get('/me', (req, res) => {
-  if (req.session.user) {
-    res.json({ user: req.session.user });
-  } else {
-    res.status(401).json({ message: 'Non connecté' });
+router.get('/me', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ message: 'Non connecté' });
+  }
+
+  try {
+    const user = await User.findById(req.session.user._id).populate('favorites');
+    if (!user) return res.status(404).json({ message: 'Utilisateur introuvable' });
+    res.json({ user });
+  } catch (err) {
+    console.error("Erreur auth/me :", err);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
+
 /*
 router.get('/me', (req, res) => {
   if (req.user) {

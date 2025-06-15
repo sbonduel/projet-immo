@@ -15,7 +15,6 @@ export default function Cartes() {
   const [apartments, setApartments] = useState([]);
   const [filteredApartments, setFilteredApartments] = useState([]);
   const [searchText, setSearchText] = useState('');
-  const [addressSearch, setAddressSearch] = useState('');
   const defaultCenter = [48.8566, 2.3522]; // Paris
   const [center, setCenter] = useState(defaultCenter);
   const navigate = useNavigate();
@@ -85,19 +84,6 @@ export default function Cartes() {
             placeholder="🔍 Rechercher par titre ou ville"
             value={searchText}
             onChange={(e) => setSearchText(e.target.value)}
-            style={{
-              padding: '0.5rem',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              width: '200px'
-            }}
-          />
-          <input
-            type="text"
-            placeholder="📍 Rechercher près d’une adresse"
-            value={addressSearch}
-            onChange={(e) => setAddressSearch(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleAddressSearch()}
             style={{
               padding: '0.5rem',
               borderRadius: '4px',

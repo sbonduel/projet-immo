@@ -334,8 +334,7 @@ export default function Dashboard() {
 
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', marginTop: '1rem' }}>
               <input type="text" placeholder="🔍 Rechercher par titre ou ville" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', width: '200px' }} />
-              <input type="text" placeholder="📍 Rechercher près d’une adresse" value={locationSearch} onChange={(e) => setLocationSearch(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc', width: '200px' }} />
-              <select value={sortOption} onChange={(e) => setSortOption(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
+                <select value={sortOption} onChange={(e) => setSortOption(e.target.value)} style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}>
                 <option value="">Trier par</option>
                 <option value="priceAsc">Prix ↑</option>
                 <option value="priceDesc">Prix ↓</option>

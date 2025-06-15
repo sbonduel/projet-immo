@@ -39,11 +39,12 @@ export default function Home() {
       topville,
     };
   };
+  
 
   useEffect(() => {
     const fetchApartments = async () => {
       try {
-        const res = await axios.get('/apartments/all');
+        const res = await axios.get('/apartments');
         const valid = res.data.filter(
           (apt) =>
             apt.location &&
@@ -68,7 +69,7 @@ export default function Home() {
   useEffect(() => {
     // Recalcule les favoris chaque fois que les appartements ou le user changent
     if (apartments.length > 0 && user) {
-      const favoriteIds = user?.favorites?.map(fav => fav?._id?.toString?.()) ?? [];
+      const favoriteIds = Array.isArray(user?.favorites) ? user.favorites.map(fav => fav.toString()) : [];
       const favorites = apartments.filter((a) =>
         favoriteIds.includes(a?._id?.toString())
       );
